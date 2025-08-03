@@ -1,4 +1,5 @@
 import { createClient } from "../utils/supabase/server";
+import Image from 'next/image';
 
 export async function Categories() {
     const supabase = await createClient();
@@ -33,10 +34,12 @@ export async function Categories() {
                                 {/* Image Container */}
                                 <div className="relative mb-4">
                                     <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-purple-100 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                                        <img 
-                                            src={category.image_url} 
+                                        <Image
+                                            src={category.image_url}
                                             alt={category.name}
-                                            className="w-10 h-10 object-contain filter group-hover:brightness-110 transition-all duration-300"
+                                            width={40}
+                                            height={40}
+                                            className="object-contain filter group-hover:brightness-110 transition-all duration-300"
                                         />
                                     </div>
                                     {/* Decorative ring */}
