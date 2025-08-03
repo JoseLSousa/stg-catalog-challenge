@@ -4,11 +4,7 @@ import { useState } from 'react';
 import { Toast } from '../components/Toast';
 import { useRouter } from 'next/navigation';
 
-interface ConfirmToastProps {
-  code: string;
-}
-
-export function ConfirmToast({ code }: ConfirmToastProps) {
+export function ConfirmToast() {
   const [visible, setVisible] = useState(true);
   const router = useRouter();
 

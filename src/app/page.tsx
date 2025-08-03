@@ -1,14 +1,14 @@
-import Image from "next/image";
 import Header from "./components/Header";
 import Carousel from "./components/Carousel";
 import { Categories } from "./components/Categories";
 import { ConfirmToast } from "./components/ConfirmToast";
 
-export default function Home({ searchParams }: { searchParams: { code?: string; username?: string } }) {
-  const { code, username } = searchParams;
+export default async function Home({ searchParams }: { searchParams: Promise<{ code?: string; username?: string }> }) {
+  const params = await searchParams;
+  const { code, username } = params;
   return (
     <>
-      {code && <ConfirmToast code={code} />}
+      {code && <ConfirmToast />}
       <main>
         <Header username={username} />
         <Carousel />

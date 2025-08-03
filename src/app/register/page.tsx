@@ -97,13 +97,11 @@ export default async function Register({ searchParams }: RegisterProps) {
             console.log('Situação inesperada: sem erro mas sem usuário criado');
             redirect('/register?error=Algo deu errado. Tente novamente');
 
-        } catch (err: any) {
+        } catch (err) {
             // Verificar se é um erro de redirect do Next.js (comportamento esperado)
-            if (err?.message === 'NEXT_REDIRECT' ||
-                err?.digest?.includes('NEXT_REDIRECT') ||
-                String(err).includes('NEXT_REDIRECT')) {
+            if (err instanceof Error && err.message.includes('NEXT_REDIRECT')) {
                 // Este é um redirect válido, não é um erro real
-                console.log('Redirect executado com sucesso para:', err.digest?.split(';')[2] || 'página de destino');
+                console.log('Redirect executado com sucesso:', err.message);
                 throw err; // Re-throw para permitir o redirect
             }
 
