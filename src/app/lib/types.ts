@@ -11,18 +11,18 @@ export interface Product {
   id: string;
   name: string;
   slug: string;
-  description?: string;
+  description: string;
   price: number;
-  compare_price?: number;
-  sku?: string;
+  compare_price: number;
+  sku: string;
   stock_quantity: number;
-  category_id?: string;
+  category_id: string;
+  // relations
   category?: Category;
-  image_url: string;
+  // imagens do produto (pode estar vazio)
   images: string[];
   is_active: boolean;
   created_at: string;
-  updated_at: string;
 }
 
 export interface Order {
