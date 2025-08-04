@@ -1,13 +1,14 @@
-import "./globals.css";
+import Header from "@/components/Header";
 
-export default function RootLayout({
+export default function PagesLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
     <html lang="en">
-      <body className="w-full h-full bg-blue-50 text-blue-900">
+      <body>
+        <Header />
         {children}
       </body>
     </html>

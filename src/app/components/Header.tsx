@@ -1,6 +1,8 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
+import Image from 'next/image'
 import {
   Dialog,
   DialogBackdrop,
@@ -27,7 +29,7 @@ export default function Header({ username }: HeaderProps) {
         <div className="fixed inset-0 z-40 flex">
           <DialogPanel
             transition
-            className="relative flex w-full max-w-xs transform flex-col overflow-y-auto bg-white pb-12 shadow-xl transition duration-300 ease-in-out data-closed:-translate-x-full"
+            className="relative flex w-full max-w-xs transform flex-col overflow-y-auto bg-blue-50 pb-12 shadow-xl transition duration-300 ease-in-out data-closed:-translate-x-full"
           >
             <div className="flex px-4 pt-5 pb-2">
               <button
@@ -41,10 +43,10 @@ export default function Header({ username }: HeaderProps) {
               </button>
             </div>
 
-            <div className="space-y-6 border-t border-gray-200 px-4 py-6">
+            <div className="space-y-6 border-t border-blue-200 px-4 py-6">
             </div>
 
-            <div className="space-y-6 border-t border-gray-200 px-4 py-6">
+            <div className="space-y-6 border-t border-blue-200 px-4 py-6">
               {username ? (
                 <div className="flow-root">
                   <p className="-m-2 block p-2 font-medium text-gray-900">Olá, {username}</p>
@@ -52,25 +54,27 @@ export default function Header({ username }: HeaderProps) {
               ) : (
                 <>
                   <div className="flow-root">
-                    <a href="/login" className="-m-2 block p-2 font-medium text-gray-900">
+                    <Link href="/login" className="-m-2 block p-2 font-medium text-gray-900">
                       Login
-                    </a>
+                    </Link>
                   </div>
                   <div className="flow-root">
-                    <a href="/register" className="-m-2 block p-2 font-medium text-gray-900">
+                    <Link href="/register" className="-m-2 block p-2 font-medium text-gray-900">
                       Cadastre-se
-                    </a>
+                    </Link>
                   </div>
                 </>
               )}
             </div>
 
-            <div className="border-t border-gray-200 px-4 py-6">
+            <div className="border-t border-blue-200 px-4 py-6">
               <a href="#" className="-m-2 flex items-center p-2">
-                <img
+                <Image
                   alt=""
                   src="https://tailwindcss.com/plus-assets/img/flags/flag-canada.svg"
                   className="block h-auto w-5 shrink-0"
+                  width={20}
+                  height={15}
                 />
                 <span className="ml-3 block text-base font-medium text-gray-900">CAD</span>
                 <span className="sr-only">, change currency</span>
@@ -80,18 +84,18 @@ export default function Header({ username }: HeaderProps) {
         </div>
       </Dialog>
 
-      <header className="relative bg-white">
-        <p className="flex h-10 items-center justify-center bg-indigo-600 px-4 text-sm font-medium text-white sm:px-6 lg:px-8">
+      <header className="relative bg-blue-50">
+        <p className="flex h-10 items-center justify-center bg-blue-600 px-4 text-sm font-medium text-white sm:px-6 lg:px-8">
           Get free delivery on orders over $100
         </p>
 
         <nav aria-label="Top" className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="border-b border-gray-200">
+          <div className="border-b border-blue-200">
             <div className="flex h-16 items-center">
               <button
                 type="button"
                 onClick={() => setOpen(true)}
-                className="relative rounded-md bg-white p-2 text-gray-400 lg:hidden"
+                className="relative rounded-md bg-blue-50 p-2 text-blue-400 lg:hidden"
               >
                 <span className="absolute -inset-0.5" />
                 <span className="sr-only">Open menu</span>
@@ -102,10 +106,12 @@ export default function Header({ username }: HeaderProps) {
               <div className="ml-4 flex lg:ml-0">
                 <a href="#">
                   <span className="sr-only">Your Company</span>
-                  <img
+                  <Image
                     alt=""
                     src="/logo.svg"
                     className="h-8 w-auto"
+                    width={32}
+                    height={32}
                   />
                 </a>
               </div>
@@ -113,12 +119,12 @@ export default function Header({ username }: HeaderProps) {
               <div className="hidden lg:flex lg:ml-8 lg:flex-1 lg:justify-center">
                 <div className="relative w-80">
                   <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                    <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                    <MagnifyingGlassIcon className="h-5 w-5 text-blue-400" aria-hidden="true" />
                   </div>
                   <Input
                     type="text"
                     name="search"
-                    className="block w-full rounded-md border-0 bg-white py-1.5 pl-10 pr-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    className="block w-full rounded-md border-0 bg-blue-50 py-1.5 pl-10 pr-3 text-blue-900 ring-1 ring-inset ring-blue-300 placeholder:text-blue-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                     placeholder="Pesquisar..."
                   />
                 </div>
@@ -127,16 +133,16 @@ export default function Header({ username }: HeaderProps) {
               <div className="ml-auto flex items-center">
                 <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
                   {username ? (
-                    <span className="text-sm font-medium text-gray-700">Olá, {username}</span>
+                    <span className="text-sm font-medium text-blue-700">Olá, {username}</span>
                   ) : (
                     <>
-                      <a href="/login" className="text-sm font-medium text-gray-700 hover:text-gray-800">
+                      <Link href="/login" className="text-sm font-medium text-blue-700 hover:text-blue-800">
                         Login
-                      </a>
-                      <span aria-hidden="true" className="h-6 w-px bg-gray-200" />
-                      <a href="/register" className="text-sm font-medium text-gray-700 hover:text-gray-800">
+                      </Link>
+                      <span aria-hidden="true" className="h-6 w-px bg-blue-200" />
+                      <Link href="/register" className="text-sm font-medium text-blue-700 hover:text-blue-800">
                         Cadastre-se
-                      </a>
+                      </Link>
                     </>
                   )}
                 </div>
@@ -145,9 +151,9 @@ export default function Header({ username }: HeaderProps) {
                   <a href="#" className="group -m-2 flex items-center p-2">
                     <ShoppingBagIcon
                       aria-hidden="true"
-                      className="size-6 shrink-0 text-gray-400 group-hover:text-gray-500"
+                      className="size-6 shrink-0 text-blue-400 group-hover:text-blue-500"
                     />
-                    <span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">0</span>
+                    <span className="ml-2 text-sm font-medium text-blue-700 group-hover:text-blue-800">0</span>
                     <span className="sr-only">items in cart, view bag</span>
                   </a>
                 </div>

@@ -1,7 +1,8 @@
-import { createClient } from "../utils/supabase/server";
+import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
-import { Toast } from "../components/Toast";
-import { RegisterForm } from "../components/RegisterForm";
+import { Toast } from "../../components/Toast";
+import { RegisterForm } from "../../components/RegisterForm";
+import Link from 'next/link';
 
 interface RegisterProps {
     searchParams: Promise<{
@@ -118,7 +119,7 @@ export default async function Register({ searchParams }: RegisterProps) {
     }
 
     return (
-        <main className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <main className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
             {/* Toast Notifications */}
             {params.error && (
                 <Toast
@@ -147,47 +148,47 @@ export default async function Register({ searchParams }: RegisterProps) {
             <div className="max-w-md w-full space-y-8">
                 {/* Header */}
                 <div className="text-center">
-                    <div className="mx-auto h-12 w-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center mb-4">
+                    <div className="mx-auto h-12 w-12 bg-gradient-to-br from-blue-500 to-green-600 rounded-xl flex items-center justify-center mb-4">
                         <svg className="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
                         </svg>
                     </div>
-                    <h2 className="text-3xl font-bold text-gray-900 mb-2">
+                    <h2 className="text-3xl font-bold text-blue-900 mb-2">
                         Criar Conta
                     </h2>
-                    <p className="text-gray-600 text-sm">
+                    <p className="text-blue-700 text-sm">
                         Junte-se a nós e explore nosso catálogo completo
                     </p>
                 </div>
 
                 {/* Form */}
-                <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
+                <div className="bg-white rounded-2xl shadow-xl p-8 border border-green-100">
                     <RegisterForm onSubmit={RegisterUser} />
 
                     {/* Login Link */}
                     <div className="mt-6 text-center">
                         <p className="text-sm text-gray-600">
                             Já tem uma conta?{' '}
-                            <a href="/login" className="font-medium text-blue-600 hover:text-blue-500 transition-colors duration-200">
+                            <Link href="/login" className="font-medium text-green-600 hover:text-green-500 transition-colors duration-200">
                                 Faça login
-                            </a>
+                            </Link>
                         </p>
                     </div>
                 </div>
 
                 {/* Social Login Options */}
-                <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+                <div className="bg-white rounded-2xl shadow-lg p-6 border border-green-100">
                     <div className="relative">
                         <div className="absolute inset-0 flex items-center">
                             <div className="w-full border-t border-gray-300" />
                         </div>
                         <div className="relative flex justify-center text-sm">
-                            <span className="px-2 bg-white text-gray-500">Ou continue com</span>
+                            <span className="px-2 bg-white text-blue-500">Ou continue com</span>
                         </div>
                     </div>
 
                     <div className="mt-6 grid grid-cols-2 gap-3">
-                        <button className="w-full inline-flex justify-center py-2.5 px-4 border border-gray-300 rounded-xl shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 transition-colors duration-200">
+                        <button className="w-full inline-flex justify-center py-2.5 px-4 border border-green-200 rounded-xl shadow-sm bg-white text-sm font-medium text-blue-700 hover:bg-green-50 transition-colors duration-200">
                             <svg className="w-5 h-5" viewBox="0 0 24 24">
                                 <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
                                 <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
@@ -197,7 +198,7 @@ export default async function Register({ searchParams }: RegisterProps) {
                             <span className="ml-2">Google</span>
                         </button>
 
-                        <button className="w-full inline-flex justify-center py-2.5 px-4 border border-gray-300 rounded-xl shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 transition-colors duration-200">
+                        <button className="w-full inline-flex justify-center py-2.5 px-4 border border-green-200 rounded-xl shadow-sm bg-white text-sm font-medium text-blue-700 hover:bg-green-50 transition-colors duration-200">
                             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
                             </svg>
