@@ -13,6 +13,7 @@ const nextConfig: NextConfig = {
       new URL("https://images.tcdn.com.br/**"),
       new URL("https://img.ltwebstatic.com/**"),
       new URL("https://zaffari.vtexassets.com/**"),
+      new URL("https://images.unsplash.com/**"),
       // new URL("/**"),
     ]
   }
