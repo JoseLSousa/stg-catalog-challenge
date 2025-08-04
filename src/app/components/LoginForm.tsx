@@ -61,7 +61,7 @@ export function LoginForm({ onSubmit }: LoginFormProps) {
                                 ? 'border-green-300 focus:ring-green-500'
                                 : formData.email
                                 ? 'border-red-300 focus:ring-red-500'
-                                : 'border-gray-300 focus:ring-blue-500'
+                                : 'border-gray-300 focus:ring-green-500'
                         }`}
                     />
                 </div>
@@ -94,7 +94,7 @@ export function LoginForm({ onSubmit }: LoginFormProps) {
                                 ? 'border-green-300 focus:ring-green-500'
                                 : formData.password
                                 ? 'border-red-300 focus:ring-red-500'
-                                : 'border-gray-300 focus:ring-blue-500'
+                                : 'border-gray-300 focus:ring-green-500'
                         }`}
                     />
                 </div>
@@ -111,7 +111,7 @@ export function LoginForm({ onSubmit }: LoginFormProps) {
                 disabled={!isValid}
                 className={`w-full font-semibold py-3 px-4 rounded-xl transition-all duration-200 shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 ${
                     isValid
-                        ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white hover:from-blue-600 hover:to-purple-700 transform hover:-translate-y-0.5 hover:shadow-xl focus:ring-blue-500'
+                        ? 'bg-gradient-to-r from-green-500 to-blue-500 text-white hover:from-green-600 hover:to-blue-600 transform hover:-translate-y-0.5 hover:shadow-xl focus:ring-green-500'
                         : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                 }`}
             >
