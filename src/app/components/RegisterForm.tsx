@@ -1,14 +1,13 @@
 'use client'
 
 import { createClient } from '@/lib/supabase/client';
-import { cn } from '@/lib/utils';
-import { Button, Input, Label } from '@headlessui/react';
+import { Button, Input } from '@headlessui/react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 
-export function RegisterForm({ className, ...props }: React.ComponentPropsWithoutRef<'main'>) {
+export function RegisterForm() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [username, setUsername] = useState("");
@@ -54,7 +53,7 @@ export function RegisterForm({ className, ...props }: React.ComponentPropsWithou
     };
 
     return (
-        <main className={cn("min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8", className)} {...props}>
+        <main className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
             <div className="max-w-md w-full space-y-8">
                 {/* Header */}
                 <div className="text-center">
