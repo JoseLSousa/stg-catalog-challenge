@@ -14,6 +14,8 @@ const nextConfig: NextConfig = {
       new URL("https://img.ltwebstatic.com/**"),
       new URL("https://zaffari.vtexassets.com/**"),
       new URL("https://images.unsplash.com/**"),
+      new URL("https://img.freepik.com/**"),
+      new URL("https://vintagefashion.com.br/**"),
       // new URL("/**"),
     ]
   }
