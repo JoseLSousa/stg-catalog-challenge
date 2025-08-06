@@ -54,12 +54,12 @@ export default function Header({ username }: HeaderProps) {
               ) : (
                 <>
                   <div className="flow-root">
-                    <Link href="/login" className="-m-2 block p-2 font-medium text-gray-900">
+                    <Link href="/auth/login" className="-m-2 block p-2 font-medium text-gray-900">
                       Login
                     </Link>
                   </div>
                   <div className="flow-root">
-                    <Link href="/register" className="-m-2 block p-2 font-medium text-gray-900">
+                    <Link href="/auth/sign-up" className="-m-2 block p-2 font-medium text-gray-900">
                       Cadastre-se
                     </Link>
                   </div>
@@ -136,11 +136,11 @@ export default function Header({ username }: HeaderProps) {
                     <span className="text-sm font-medium text-blue-700">Olá, {username}</span>
                   ) : (
                     <>
-                      <Link href="/login" className="text-sm font-medium text-blue-700 hover:text-blue-800">
+                      <Link href="/auth/login" className="text-sm font-medium text-blue-700 hover:text-blue-800">
                         Login
                       </Link>
                       <span aria-hidden="true" className="h-6 w-px bg-blue-200" />
-                      <Link href="/register" className="text-sm font-medium text-blue-700 hover:text-blue-800">
+                      <Link href="/auth/sign-up" className="text-sm font-medium text-blue-700 hover:text-blue-800">
                         Cadastre-se
                       </Link>
                     </>
