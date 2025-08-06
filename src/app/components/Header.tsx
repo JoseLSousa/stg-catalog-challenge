@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import {
+  Button,
   Dialog,
   DialogBackdrop,
   DialogPanel,
@@ -115,6 +116,15 @@ export default function Header({ username }: HeaderProps) {
                   />
                 </a>
               </div>
+              {/* {CatalogButton} */}
+              <div className='ml-10 flex lg:ml-10'>
+                <Button>
+                  <Link href="/catalog" className="text-blue-700 hover:text-blue-800">
+                    Catálogo
+                  </Link>
+                </Button>
+              </div>
+
               {/* Search */}
               <div className="hidden lg:flex lg:ml-8 lg:flex-1 lg:justify-center">
                 <div className="relative w-80">

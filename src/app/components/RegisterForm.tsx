@@ -1,5 +1,3 @@
-'use client'
-
 import { createClient } from '@/lib/supabase/client';
 import { Button, Input } from '@headlessui/react';
 import Link from 'next/link';
@@ -14,12 +12,11 @@ export function RegisterForm() {
     const [phoneNumber, setPhoneNumber] = useState("");
     const [repeatPassword, setRepeatPassword] = useState("");
     const [terms, setTerms] = useState(false);
-    const [confirmPassword, setConfirmPassword] = useState("");
     const [error, setError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
 
-    const handleSignUp = async (e: React.FormEvent) => {
+    async function handleSignUp(e: React.FormEvent) {
         e.preventDefault();
         const supabase = await createClient();
         setIsLoading(true);
@@ -190,8 +187,8 @@ export function RegisterForm() {
                                     name="confirmPassword"
                                     type="password"
                                     required
-                                    value={confirmPassword}
-                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                    value={repeatPassword}
+                                    onChange={(e) => setRepeatPassword(e.target.value)}
                                     placeholder="••••••••"
                                     className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-gray-900 placeholder-gray-500"
                                 />
@@ -234,7 +231,7 @@ export function RegisterForm() {
                         {/* Submit Button */}
                         <Button
                             type="submit"
-                            disabled={isLoading || !terms || !email || !password || !confirmPassword || !username || !phoneNumber}
+                            disabled={isLoading || !terms || !email || !password || !repeatPassword || !username || !phoneNumber}
                             className="w-full bg-gradient-to-r from-blue-500 to-green-600 hover:from-blue-600 hover:to-green-700 disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                         >
                             <span className="flex items-center justify-center">
