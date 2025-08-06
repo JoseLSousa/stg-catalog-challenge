@@ -20,7 +20,7 @@ interface GroupedCategory {
 export default async function Page() {
     const { data, error } = await fetchData()
 
-    async function fetchData(): Promise<{ data: GroupedCategory[] | null, error: any }> {
+    async function fetchData(): Promise<{ data: GroupedCategory[] | null, error: string | null }> {
         try {
             const supabase = await createClient()
             const { data, error } = await supabase
@@ -32,7 +32,7 @@ export default async function Page() {
             return { data, error: null }
         } catch (error) {
             console.error(error)
-            return { data: null, error }
+            return { data: null, error: String(error) }
         }
     }
     // Cast data to typed array
@@ -44,7 +44,7 @@ export default async function Page() {
                 <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-green-50 py-8">
                     <div className="text-center">
                         <h2 className="text-2xl font-bold text-red-600 mb-4">Erro ao carregar os dados</h2>
-                        <p className="text-gray-700">{error.message || "Tente novamente mais tarde."}</p>
+                        <p className="text-gray-700">{"Tente novamente mais tarde."}</p>
                     </div>
                 </main>
             </div>
