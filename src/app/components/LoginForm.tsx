@@ -1,19 +1,22 @@
-import { createClient } from "@/lib/supabase/client";
+import { createClient } from "@/lib/supabase/server";
 import { Button, Input } from "@headlessui/react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { redirect } from "next/navigation";
 
 export function LoginForm() {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [error, setError] = useState<string | null>(null);
-    const [isLoading, setIsLoading] = useState(false);
-    const router = useRouter();
+    var isLoading: boolean = false;
 
-    async function handleLogin(e: React.FormEvent) {
-        e.preventDefault();
-        const supabase = createClient()
+
+    async function handleLogin(formData: FormData) {
+        'use server'
+        const email = formData.get('email') as string;
+        const password = formData.get('password') as string;
+        const supabase = await createClient()
+        const { data, error } = await supabase.auth.signInWithPassword({
+            email,
+            password
+        });
+        if (data && !error) redirect('/');
     }
 
     return (
@@ -34,7 +37,7 @@ export function LoginForm() {
 
                 {/* Form */}
                 <div className="bg-white rounded-2xl shadow-xl p-8 border border-green-100">
-                    <form onSubmit={handleLogin} className="space-y-6">
+                    <form className="space-y-6" action={handleLogin}>
                         {/* Email Field */}
                         <div>
                             <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
@@ -51,8 +54,6 @@ export function LoginForm() {
                                     name="email"
                                     type="email"
                                     required
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
                                     placeholder="seu@email.com"
                                     className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:ring-2 focus:border-transparent transition-all duration-200 text-gray-900 placeholder-gray-500`}
                                 />
@@ -76,8 +77,6 @@ export function LoginForm() {
                                     name="password"
                                     type="password"
                                     required
-                                    value={password}
-                                    onChange={(p) => setPassword(p.target.value)}
                                     placeholder="••••••••"
                                     className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:ring-2 focus:border-transparent transition-all duration-200 text-gray-900 placeholder-gray-500`}
                                 />
@@ -85,13 +84,9 @@ export function LoginForm() {
                         </div>
 
                         {/* Submit Button */}
-                        <Button
-                            disabled={isLoading}
-                            type="submit"
-                            className={`w-full font-semibold py-3 px-4 rounded-xl transition-all duration-200 shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 `}
-                        >
+                        <Button type="submit" className="bg-gradient-to-r from-blue-500 to-green-600 text-white hover:from-blue-600 hover:to-green-700 w-full font-semibold py-3 px-4 rounded-xl transition-all duration-200 shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 cursor-pointer">
                             <span className="flex items-center justify-center">
-                                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
                                 </svg>
                             </span>
@@ -120,7 +115,7 @@ export function LoginForm() {
                     </div>
 
                     <div className="mt-6 grid grid-cols-2 gap-3">
-                        <Button className="w-full inline-flex justify-center py-2.5 px-4 border border-green-200 rounded-xl shadow-sm bg-white text-sm font-medium text-blue-700 hover:bg-green-50 transition-colors duration-200">
+                        <Button className="w-full inline-flex justify-center py-2.5 px-4 border border-green-200 rounded-xl shadow-sm bg-white text-sm font-medium text-blue-700 hover:bg-green-50 transition-colors duration-200 cursor-pointer">
                             <svg className="w-5 h-5" viewBox="0 0 24 24">
                                 <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
                                 <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
@@ -130,7 +125,7 @@ export function LoginForm() {
                             <span className="ml-2">Google</span>
                         </Button>
 
-                        <Button className="w-full inline-flex justify-center py-2.5 px-4 border border-green-200 rounded-xl shadow-sm bg-white text-sm font-medium text-blue-700 hover:bg-green-50 transition-colors duration-200">
+                        <Button className="w-full inline-flex justify-center py-2.5 px-4 border border-green-200 rounded-xl shadow-sm bg-white text-sm font-medium text-blue-700 hover:bg-green-50 transition-colors duration-200 cursor-pointer">
                             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
                             </svg>
