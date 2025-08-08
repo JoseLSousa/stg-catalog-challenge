@@ -1,9 +1,25 @@
-import { createClient } from '@/lib/supabase/server';
+'use client';
+import { createClient } from '@/lib/supabase/client';
+import { Button } from '@headlessui/react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
-export async function Categories() {
-    const supabase = await createClient();
-    const { data: categories } = await supabase.from('categories').select();
+export function Categories() {
+    const [categories, setCategories] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
+    const router = useRouter();
+    
+    useEffect(() => {
+        async function fetchCategories() {
+            const supabase = createClient();
+            const { data } = await supabase.from('categories').select();
+            setCategories(data || []);
+            setLoading(false);
+        }
+        
+        fetchCategories();
+    }, []);
 
     return (
         <section className="py-16 px-4 bg-gradient-to-br from-gray-50 to-white">
@@ -22,20 +38,20 @@ export async function Categories() {
                 {/* Categories Grid - Horizontal scroll on mobile, grid on larger screens */}
                 <div className="flex overflow-x-auto gap-4 sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 sm:gap-6 scrollbar-hide categories-scroll sm:px-0 p-25">
                     {categories?.map((category) => (
-                        <div 
+                        <Button onClick={() => router.push('/catalog/' + category.id)}
                             key={category.id}
                             className="group relative bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer border border-green-100 hover:border-blue-200 flex-shrink-0 w-40 sm:w-auto"
                         >
                             {/* Background Gradient Overlay */}
                             <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-green-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl"></div>
-                            
+
                             {/* Content */}
                             <div className="relative z-10 flex flex-col items-center text-center">
                                 {/* Image Container */}
                                 <div className="relative mb-4">
                                     <div className="w-16 h-16 bg-gradient-to-br from-green-100 to-blue-100 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                                        <Image 
-                                            src={category.image_url} 
+                                        <Image
+                                            src={category.image_url}
                                             alt={category.name}
                                             className="w-10 h-10 object-contain filter group-hover:brightness-110 transition-all duration-300"
                                             width={40}
@@ -61,22 +77,22 @@ export async function Categories() {
 
                             {/* Subtle border animation */}
                             <div className="absolute inset-0 rounded-2xl border-2 border-transparent group-hover:border-gradient-to-r group-hover:from-green-200 group-hover:to-blue-200 transition-all duration-300"></div>
-                        </div>
-                    )                )}
-            </div>
-
-            {/* Loading State Skeleton */}
-            {(!categories || categories.length === 0) && (
-                <div className="flex overflow-x-auto gap-4 pb-4 sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 sm:gap-6 scrollbar-hide px-2 sm:px-0">
-                    {Array.from({ length: 6 }).map((_, index) => (
-                        <div key={index} className="bg-white rounded-2xl p-6 shadow-lg animate-pulse flex-shrink-0 w-40 sm:w-auto">
-                            <div className="w-16 h-16 bg-gray-200 rounded-2xl mx-auto mb-4"></div>
-                            <div className="h-4 bg-gray-200 rounded w-3/4 mx-auto"></div>
-                        </div>
+                        </Button>
                     ))}
                 </div>
-            )}
-        </div>
-    </section>
+
+                {/* Loading State Skeleton */}
+                {(loading || !categories || categories.length === 0) && (
+                    <div className="flex overflow-x-auto gap-4 pb-4 sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 sm:gap-6 scrollbar-hide px-2 sm:px-0">
+                        {Array.from({ length: 6 }).map((_, index) => (
+                            <div key={index} className="bg-white rounded-2xl p-6 shadow-lg animate-pulse flex-shrink-0 w-40 sm:w-auto">
+                                <div className="w-16 h-16 bg-gray-200 rounded-2xl mx-auto mb-4"></div>
+                                <div className="h-4 bg-gray-200 rounded w-3/4 mx-auto"></div>
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+        </section>
     )
 }
