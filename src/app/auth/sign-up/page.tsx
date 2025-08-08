@@ -2,7 +2,8 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { ToastHandler } from '@/components/ToastHandler'
 
-export default function Page({ searchParams }: { searchParams?: { error?: string } }) {
+export default async function Page({ searchParams }: { searchParams: Promise<{ error?: string }> }) {
+  const urlError = await searchParams
   async function handleSignUp(formData: FormData) {
     'use server'
     const username = formData.get('username') as string
@@ -13,7 +14,6 @@ export default function Page({ searchParams }: { searchParams?: { error?: string
 
     if (password !== repeatPassword) {
       redirect(`/auth/sign-up?error=${encodeURIComponent('As senhas não coincidem')}`)
-      return
     }
 
     const supabase = await createClient()
@@ -26,17 +26,16 @@ export default function Page({ searchParams }: { searchParams?: { error?: string
     })
     if (error) {
       redirect(`/auth/sign-up?error=${encodeURIComponent(error.message)}`)
-      return
     }
     redirect('/auth/sign-up-success')
   }
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 flex items-center justify-center py-12 px-4">
-      {searchParams?.error && (
-        <ToastHandler type="error" message={searchParams.error} replacePath="/auth/sign-up" />
+      {urlError?.error && (
+        <ToastHandler type="error" message={urlError.error} replacePath="/auth/sign-up" />
       )}
-      <form action={handleSignUp} method="post" className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8 space-y-6">
+      <form action={handleSignUp} method="POST" className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8 space-y-6">
         <h2 className="text-2xl font-bold text-blue-900 text-center">Criar Conta</h2>
         <div>
           <label htmlFor="username" className="block text-sm font-medium text-gray-700">Nome de Usuário</label>

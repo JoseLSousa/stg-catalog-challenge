@@ -6,6 +6,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { CartItem } from '@/lib/types'
 import { Toast } from '@/components/Toast'
+import { Button } from '@headlessui/react'
 
 export default function CartPage() {
   const [cart, setCart] = useState<CartItem[]>([])
@@ -37,20 +38,6 @@ export default function CartPage() {
 
   const total = cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0)
 
-  const handleCheckout = () => {
-    if (cart.length === 0) {
-      setToast({ type: 'error', message: 'Carrinho vazio' })
-      return
-    }
-    const msg = cart.map(i => `${i.quantity}x ${i.product.name}`).join(', ')
-    const text = `Olá, gostaria de comprar: ${msg}. Total: R$ ${total.toFixed(2)}`
-    const url = `https://wa.me/?text=${encodeURIComponent(text)}`
-    window.open(url, '_blank')
-    localStorage.removeItem('cart')
-    setCart([])
-    setToast({ type: 'success', message: 'Checkout iniciado' })
-  }
-
   return (
     <>
       <Header />
@@ -76,19 +63,21 @@ export default function CartPage() {
                   <p className="text-gray-600">R$ {item.product.price.toFixed(2)}</p>
                 </div>
                 <div className="flex items-center gap-2">
-                  <button onClick={() => handleQty(item.product.id, -1)} className="px-2 bg-gray-200 rounded">-</button>
+                  <Button onClick={() => handleQty(item.product.id, -1)} className="px-2 bg-gray-200 rounded">-</Button>
                   <span>{item.quantity}</span>
-                  <button onClick={() => handleQty(item.product.id, 1)} className="px-2 bg-gray-200 rounded">+</button>
+                  <Button onClick={() => handleQty(item.product.id, 1)} className="px-2 bg-gray-200 rounded">+</Button>
                 </div>
                 <div className="flex items-center gap-4">
                   <span className="font-semibold">R$ {(item.product.price * item.quantity).toFixed(2)}</span>
-                  <button onClick={() => handleRemove(item.product.id)} className="text-red-600 hover:underline">Remover</button>
+                  <Button onClick={() => handleRemove(item.product.id)} className="text-red-600 hover:underline">Remover</Button>
                 </div>
               </div>
             ))}
             <div className="flex justify-between items-center mt-6">
               <span className="text-xl font-bold">Total: R$ {total.toFixed(2)}</span>
-              <button onClick={handleCheckout} className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700">Finalizar no WhatsApp</button>
+              <Link href='/cart/checkout' className="bg-green-600 text-white px-6 py-2 rounded-xl hover:bg-green-700">
+                Finalizar Compra
+              </Link>
             </div>
           </div>
         )}

@@ -1,52 +1,63 @@
-import { createClient } from '@/lib/supabase/client';
+import { createClient } from '@/lib/supabase/server';
 import { Button, Input } from '@headlessui/react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { redirect } from 'next/navigation';
+import z from 'zod';
 
 
 export function RegisterForm() {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [username, setUsername] = useState("");
-    const [phoneNumber, setPhoneNumber] = useState("");
-    const [repeatPassword, setRepeatPassword] = useState("");
-    const [terms, setTerms] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-    const [isLoading, setIsLoading] = useState(false);
-    const router = useRouter();
+    var isLoading: boolean = false;
+    const schema = z.object({
+        email: z.email().nonempty({ message: "Email é obrigatório" }),
+        password: z.string().min(8, { message: "Senha deve ter ao menos 8 caracteres" }),
+        username: z.string().min(3, { message: "Nome de usuário deve ter ao menos 3 caracteres" }),
+        phoneNumber: z.string().min(10, { message: "Telefone deve ter ao menos 10 caracteres" }),
+        terms: z.literal(true),
+        confirmPassword: z.string().min(8, { message: "Confirmação de senha é obrigatória" })
+    }).refine((data) => data.password === data.confirmPassword, {
+        message: "Senhas não coincidem",
+        path: ["confirmPassword"],
+    })
 
-    async function handleSignUp(e: React.FormEvent) {
-        e.preventDefault();
+    async function handleSignUp(formData: FormData) {
+        'use server'
+        const email = formData.get('email') as string;
+        const password = formData.get('password') as string;
+        const username = formData.get('username') as string;
+        const phoneNumber = formData.get('phone') as string;
+        const confirmPassword = formData.get('confirmPassword') as string;
+
+        const terms = formData.get('terms') === 'on';
         const supabase = await createClient();
-        setIsLoading(true);
-        setError(null);
-
-        if (password !== repeatPassword) {
-            setError("Passwords do not match");
-            setIsLoading(false);
-            return;
-        }
-
         try {
-            const { error } = await supabase.auth.signUp({
+            isLoading = true;
+            schema.parse({ email, password, username, phoneNumber, terms, confirmPassword });
+
+            const { data, error } = await supabase.auth.signUp({
                 email,
                 password,
                 options: {
-                    emailRedirectTo: `${window.location.origin}/protected`,
                     data: {
                         username,
-                        phoneNumber
+                        phone: phoneNumber,
                     }
-                },
-            });
-            if (error) throw error;
-            router.push("/auth/sign-up-success");
-        } catch (error: unknown) {
-            setError(error instanceof Error ? error.message : "An error occurred");
-        } finally {
-            setIsLoading(false);
+                }
+
+            })
+            console.log('Sign-up response:', { data, error });
+            if (data && !error) {
+                isLoading = false;
+                redirect('/auth/sign-up-success')
+            }
+        } catch (err: any) {
+            console.error('Erro ao registrar:', err);
+            if (err instanceof z.ZodError) {
+                console.error('Erros de validação:', err);
+            } else {
+                console.error('Erro inesperado:', err.message || err);
+            }
         }
+
     };
 
     return (
@@ -69,7 +80,7 @@ export function RegisterForm() {
 
                 {/* Form */}
                 <div className="bg-white rounded-2xl shadow-xl p-8 border border-green-100">
-                    <form onSubmit={handleSignUp} className="space-y-6">
+                    <form action={handleSignUp} className="space-y-6">
                         {/* Username Field */}
                         <div>
                             <label htmlFor="username" className="block text-sm font-semibold text-gray-700 mb-2">
@@ -87,8 +98,6 @@ export function RegisterForm() {
                                     name="username"
                                     type="text"
                                     required
-                                    value={username}
-                                    onChange={(e) => setUsername(e.target.value)}
                                     placeholder="Seu nome de usuário"
                                     className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-gray-900 placeholder-gray-500"
                                 />
@@ -112,8 +121,6 @@ export function RegisterForm() {
                                     name="phone"
                                     type="tel"
                                     required
-                                    value={phoneNumber}
-                                    onChange={(e) => setPhoneNumber(e.target.value)}
                                     placeholder="(XX) XXXXX-XXXX"
                                     className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-gray-900 placeholder-gray-500"
                                 />
@@ -134,11 +141,9 @@ export function RegisterForm() {
                                 <Input
                                     autoComplete='email'
                                     id="new-email"
-                                    name="new-email"
+                                    name="email"
                                     type="email"
                                     required
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
                                     placeholder="seu@email.com"
                                     className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-gray-900 placeholder-gray-500"
                                 />
@@ -162,8 +167,6 @@ export function RegisterForm() {
                                     name="password"
                                     type="password"
                                     required
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
                                     placeholder="••••••••"
                                     className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-gray-900 placeholder-gray-500"
                                 />
@@ -187,19 +190,17 @@ export function RegisterForm() {
                                     name="confirmPassword"
                                     type="password"
                                     required
-                                    value={repeatPassword}
-                                    onChange={(e) => setRepeatPassword(e.target.value)}
                                     placeholder="••••••••"
                                     className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-gray-900 placeholder-gray-500"
                                 />
                             </div>
                         </div>
-
+                        {/* 
                         {error && (
                             <div className="text-sm text-red-600 bg-red-50 p-3 rounded-xl border border-red-200">
                                 {error}
                             </div>
-                        )}
+                        )} */}
 
                         {/* Terms Checkbox */}
                         <div className="flex items-start">
@@ -209,8 +210,6 @@ export function RegisterForm() {
                                     name="terms"
                                     type="checkbox"
                                     required
-                                    checked={terms}
-                                    onChange={(e) => setTerms(e.target.checked)}
                                     className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                                 />
                             </div>
@@ -231,8 +230,7 @@ export function RegisterForm() {
                         {/* Submit Button */}
                         <Button
                             type="submit"
-                            disabled={isLoading || !terms || !email || !password || !repeatPassword || !username || !phoneNumber}
-                            className="w-full bg-gradient-to-r from-blue-500 to-green-600 hover:from-blue-600 hover:to-green-700 disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                            className="w-full bg-gradient-to-r from-blue-500 to-green-600 hover:from-blue-600 hover:to-green-700 disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 cursor-pointer"
                         >
                             <span className="flex items-center justify-center">
                                 {isLoading ? (

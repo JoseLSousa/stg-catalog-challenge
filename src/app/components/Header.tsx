@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import {
@@ -12,12 +12,30 @@ import {
 } from '@headlessui/react'
 import { Bars3Icon, MagnifyingGlassIcon, ShoppingBagIcon, XMarkIcon } from '@heroicons/react/24/outline'
 
-interface HeaderProps {
-  username?: string;
-}
+import { LoginRegisterOrUsernameButton } from './LoginRegisterOrUsernameButton'
 
-export default function Header({ username }: HeaderProps) {
+export default function Header() {
   const [open, setOpen] = useState(false)
+  const [cartCount, setCartCount] = useState(0)
+
+
+  useEffect(() => {
+    const updateCartCount = () => {
+      try {
+        const cartStr = localStorage.getItem('cart')
+        const cart = cartStr ? JSON.parse(cartStr) as { quantity: number }[] : []
+        setCartCount(cart.reduce((sum, item) => sum + item.quantity, 0))
+      } catch {
+        setCartCount(0)
+      }
+    }
+
+    updateCartCount()
+    window.addEventListener('storage', updateCartCount)
+    return () => window.removeEventListener('storage', updateCartCount)
+  }, [])
+
+
 
   return (
     <div className="bg-white">
@@ -48,24 +66,7 @@ export default function Header({ username }: HeaderProps) {
             </div>
 
             <div className="space-y-6 border-t border-blue-200 px-4 py-6">
-              {username ? (
-                <div className="flow-root">
-                  <p className="-m-2 block p-2 font-medium text-gray-900">Olá, {username}</p>
-                </div>
-              ) : (
-                <>
-                  <div className="flow-root">
-                    <Link href="/auth/login" className="-m-2 block p-2 font-medium text-gray-900">
-                      Login
-                    </Link>
-                  </div>
-                  <div className="flow-root">
-                    <Link href="/auth/sign-up" className="-m-2 block p-2 font-medium text-gray-900">
-                      Cadastre-se
-                    </Link>
-                  </div>
-                </>
-              )}
+
             </div>
 
             <div className="border-t border-blue-200 px-4 py-6">
@@ -142,30 +143,18 @@ export default function Header({ username }: HeaderProps) {
 
               <div className="ml-auto flex items-center">
                 <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
-                  {username ? (
-                    <span className="text-sm font-medium text-blue-700">Olá, {username}</span>
-                  ) : (
-                    <>
-                      <Link href="/auth/login" className="text-sm font-medium text-blue-700 hover:text-blue-800">
-                        Login
-                      </Link>
-                      <span aria-hidden="true" className="h-6 w-px bg-blue-200" />
-                      <Link href="/auth/sign-up" className="text-sm font-medium text-blue-700 hover:text-blue-800">
-                        Cadastre-se
-                      </Link>
-                    </>
-                  )}
+                  <LoginRegisterOrUsernameButton />
                 </div>
                 {/* Cart */}
                 <div className="ml-4 flow-root lg:ml-6">
-                  <a href="#" className="group -m-2 flex items-center p-2">
+                  <Link href="/cart" className="group -m-2 flex items-center p-2">
                     <ShoppingBagIcon
                       aria-hidden="true"
                       className="size-6 shrink-0 text-blue-400 group-hover:text-blue-500"
                     />
-                    <span className="ml-2 text-sm font-medium text-blue-700 group-hover:text-blue-800">0</span>
+                    <span className="ml-2 text-sm font-medium text-blue-700 group-hover:text-blue-800">{cartCount}</span>
                     <span className="sr-only">items in cart, view bag</span>
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>
