@@ -1,15 +1,16 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import {
+  Button,
   Dialog,
   DialogBackdrop,
-  DialogPanel,
-  Input
+  DialogPanel
 } from '@headlessui/react'
-import { Bars3Icon, MagnifyingGlassIcon, ShoppingBagIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import { Bars3Icon, ShoppingBagIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import { SearchForm } from './SearchForm'
 
 interface HeaderProps {
   username?: string;
@@ -17,6 +18,23 @@ interface HeaderProps {
 
 export default function Header({ username }: HeaderProps) {
   const [open, setOpen] = useState(false)
+  const [cartCount, setCartCount] = useState(0)
+
+  useEffect(() => {
+    const updateCartCount = () => {
+      try {
+        const cartStr = localStorage.getItem('cart')
+        const cart = cartStr ? JSON.parse(cartStr) as { quantity: number }[] : []
+        setCartCount(cart.reduce((sum, item) => sum + item.quantity, 0))
+      } catch {
+        setCartCount(0)
+      }
+    }
+
+    updateCartCount()
+    window.addEventListener('storage', updateCartCount)
+    return () => window.removeEventListener('storage', updateCartCount)
+  }, [])
 
   return (
     <div className="bg-white">
@@ -43,9 +61,36 @@ export default function Header({ username }: HeaderProps) {
               </button>
             </div>
 
-            <div className="space-y-6 border-t border-blue-200 px-4 py-6">
+            {/* Mobile search form */}
+            <div className="px-4 py-6">
+              <SearchForm mobile={true} onSearch={() => setOpen(false)} />
             </div>
 
+            {/* Mobile navigation */}
+            <div className="space-y-6 border-t border-blue-200 px-4 py-6">
+              <div className="flow-root">
+                <Link
+                  href="/catalog"
+                  className="-m-2 block p-2 font-medium text-blue-700 hover:text-blue-800"
+                  onClick={() => setOpen(false)}
+                >
+                  Catálogo
+                </Link>
+              </div>
+
+              <div className="flow-root">
+                <Link
+                  href="/cart"
+                  className="-m-2 flex items-center p-2 font-medium text-blue-700 hover:text-blue-800"
+                  onClick={() => setOpen(false)}
+                >
+                  <ShoppingBagIcon className="mr-2 size-5 text-blue-400" />
+                  Carrinho ({cartCount})
+                </Link>
+              </div>
+            </div>
+
+            {/* Mobile account section */}
             <div className="space-y-6 border-t border-blue-200 px-4 py-6">
               {username ? (
                 <div className="flow-root">
@@ -66,27 +111,13 @@ export default function Header({ username }: HeaderProps) {
                 </>
               )}
             </div>
-
-            <div className="border-t border-blue-200 px-4 py-6">
-              <a href="#" className="-m-2 flex items-center p-2">
-                <Image
-                  alt=""
-                  src="https://tailwindcss.com/plus-assets/img/flags/flag-canada.svg"
-                  className="block h-auto w-5 shrink-0"
-                  width={20}
-                  height={15}
-                />
-                <span className="ml-3 block text-base font-medium text-gray-900">CAD</span>
-                <span className="sr-only">, change currency</span>
-              </a>
-            </div>
           </DialogPanel>
         </div>
       </Dialog>
 
       <header className="relative bg-blue-50">
         <p className="flex h-10 items-center justify-center bg-blue-600 px-4 text-sm font-medium text-white sm:px-6 lg:px-8">
-          Get free delivery on orders over $100
+          Frete grátis para pedidos acima de R$100
         </p>
 
         <nav aria-label="Top" className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -104,31 +135,29 @@ export default function Header({ username }: HeaderProps) {
 
               {/* Logo */}
               <div className="ml-4 flex lg:ml-0">
-                <a href="#">
-                  <span className="sr-only">Your Company</span>
+                <Link href="/">
+                  <span className="sr-only">STG Catalog</span>
                   <Image
-                    alt=""
+                    alt="STG Logo"
                     src="/logo.svg"
                     className="h-8 w-auto"
                     width={32}
                     height={32}
                   />
-                </a>
+                </Link>
               </div>
-              {/* Search */}
-              <div className="hidden lg:flex lg:ml-8 lg:flex-1 lg:justify-center">
-                <div className="relative w-80">
-                  <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                    <MagnifyingGlassIcon className="h-5 w-5 text-blue-400" aria-hidden="true" />
-                  </div>
-                  <Input
-                    type="text"
-                    name="search"
-                    className="block w-full rounded-md border-0 bg-blue-50 py-1.5 pl-10 pr-3 text-blue-900 ring-1 ring-inset ring-blue-300 placeholder:text-blue-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
-                    placeholder="Pesquisar..."
-                  />
-                </div>
+
+              {/* Catalog Button - visible only on desktop */}
+              <div className='hidden lg:ml-10 lg:flex'>
+                <Button className="rounded-md bg-blue-100 px-3 py-2 text-sm font-medium text-blue-700 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-600">
+                  <Link href="/catalog" className="text-blue-700 hover:text-blue-800">
+                    Catálogo
+                  </Link>
+                </Button>
               </div>
+
+              {/* Search - using our new component */}
+              <SearchForm />
 
               <div className="ml-auto flex items-center">
                 <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
@@ -146,16 +175,17 @@ export default function Header({ username }: HeaderProps) {
                     </>
                   )}
                 </div>
+
                 {/* Cart */}
                 <div className="ml-4 flow-root lg:ml-6">
-                  <a href="#" className="group -m-2 flex items-center p-2">
+                  <Link href="/cart" className="group -m-2 flex items-center p-2">
                     <ShoppingBagIcon
                       aria-hidden="true"
                       className="size-6 shrink-0 text-blue-400 group-hover:text-blue-500"
                     />
-                    <span className="ml-2 text-sm font-medium text-blue-700 group-hover:text-blue-800">0</span>
+                    <span className="ml-2 text-sm font-medium text-blue-700 group-hover:text-blue-800">{cartCount}</span>
                     <span className="sr-only">items in cart, view bag</span>
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>
