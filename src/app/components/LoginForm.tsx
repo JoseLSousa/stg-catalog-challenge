@@ -4,7 +4,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 export function LoginForm() {
-    var isLoading: boolean = false;
+    const isLoading: boolean = false;
 
 
     async function handleLogin(formData: FormData) {

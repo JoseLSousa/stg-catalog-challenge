@@ -4,7 +4,7 @@ import { Product } from '@/lib/types'
 import AddToCartButton from '@/components/AddToCartButton'
 import { ProductGallery } from '@/components/ProductGallery'
 
-export default async function ProductDetails({ params }: { params: Promise<{ product: any }> }) {
+export default async function ProductDetails({ params }: { params: Promise<{ product: string }> }) {
     const productId = await params
     const supabase = await createClient()
     // get product details

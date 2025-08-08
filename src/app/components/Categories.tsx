@@ -5,8 +5,15 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
+interface Category {
+    id: string;
+    name: string;
+    image_url: string;
+    description?: string;
+}
+
 export function Categories() {
-    const [categories, setCategories] = useState<any[]>([]);
+    const [categories, setCategories] = useState<Category[]>([]);
     const [loading, setLoading] = useState(true);
     const router = useRouter();
     

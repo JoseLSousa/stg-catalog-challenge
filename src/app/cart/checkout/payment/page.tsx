@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from 'react'
 import Header from '@/components/Header'
 import { CartItem } from '@/lib/types'
-import { useRouter } from 'next/navigation'
 import { Toast } from '@/components/Toast'
 import { createClient } from '@/lib/supabase/client'
 
@@ -17,18 +16,17 @@ interface OrderInfo {
     items: CartItem[]
 }
 
-interface PaymentFormData {
-    cardNumber: string
-    cardName: string
-    expiryDate: string
-    cvv: string
+interface UserData {
+    id: string;
+    email: string;
+    name: string;
+    phone: string;
 }
 
 export default function PaymentPage() {
     const [orderInfo, setOrderInfo] = useState<OrderInfo | null>(null)
     const [toast, setToast] = useState<{ type: 'success' | 'error' | 'info'; message: string } | null>(null)
-    const router = useRouter()
-    const [userData, setUserData] = useState<any>(null)
+    const [userData, setUserData] = useState<UserData | null>(null)
     const [loading, setLoading] = useState(true)
 
     // Form state
@@ -45,8 +43,8 @@ export default function PaymentPage() {
 
             if (user) {
                 setUserData({
-                    id: user.id,
-                    email: user.email,
+                    id: user.id || '',
+                    email: user.email || '',
                     name: user.user_metadata.username || 'Usuário',
                     phone: user.user_metadata.phoneNumber || ''
                 })
@@ -157,9 +155,11 @@ TOTAL: R$ ${total.toFixed(2)}`
             const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(whatsAppMessage)}`
             setTimeout(() => window.open(whatsappUrl, '_blank'), 2000)
 
-        } catch (error: any) {
+        } catch (error: unknown) {
+            let message = 'Ocorreu um erro ao processar seu pedido';
+            if (error instanceof Error) message = error.message;
+            setToast({ type: 'error', message })
             console.error('Order error:', error)
-            setToast({ type: 'error', message: error.message || 'Ocorreu um erro ao processar seu pedido' })
         }
     }
 

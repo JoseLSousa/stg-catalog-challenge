@@ -98,7 +98,7 @@ export default function SearchPage() {
           </div>
         ) : query ? (
           <div className="text-center py-12">
-            <p className="text-gray-500">Nenhum resultado encontrado para "{query}"</p>
+            <p className="text-gray-500">Nenhum resultado encontrado para &quot;{query}&quot;</p>
             <p className="mt-2 text-gray-400">Tente buscar por outro termo.</p>
           </div>
         ) : (
