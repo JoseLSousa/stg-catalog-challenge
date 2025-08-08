@@ -88,6 +88,20 @@ export default function Header({ username }: HeaderProps) {
                   Carrinho ({cartCount})
                 </Link>
               </div>
+              {username && (
+                <div className="flow-root">
+                  <Link
+                    href="/orders"
+                    className="-m-2 flex items-center p-2 font-medium text-blue-700 hover:text-blue-800"
+                    onClick={() => setOpen(false)}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="mr-2 size-5 text-blue-400">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 8.25V6.75A2.25 2.25 0 0014.25 4.5h-4.5A2.25 2.25 0 007.5 6.75v1.5m9 0v10.5A2.25 2.25 0 0114.25 20.25h-4.5A2.25 2.25 0 017.5 18.75V8.25m9 0h-9" />
+                    </svg>
+                    Histórico de pedidos
+                  </Link>
+                </div>
+              )}
             </div>
 
             {/* Mobile account section */}
@@ -176,8 +190,8 @@ export default function Header({ username }: HeaderProps) {
                   )}
                 </div>
 
-                {/* Cart */}
-                <div className="ml-4 flow-root lg:ml-6">
+                {/* Cart + Orders */}
+                <div className="ml-4 lg:ml-6 flex items-center gap-2">
                   <Link href="/cart" className="group -m-2 flex items-center p-2">
                     <ShoppingBagIcon
                       aria-hidden="true"
@@ -186,6 +200,14 @@ export default function Header({ username }: HeaderProps) {
                     <span className="ml-2 text-sm font-medium text-blue-700 group-hover:text-blue-800">{cartCount}</span>
                     <span className="sr-only">items in cart, view bag</span>
                   </Link>
+                  {username && (
+                    <Link href="/orders" className="group -m-2 flex items-center p-2" title="Histórico de pedidos">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 shrink-0 text-blue-400 group-hover:text-blue-500">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 8.25V6.75A2.25 2.25 0 0014.25 4.5h-4.5A2.25 2.25 0 007.5 6.75v1.5m9 0v10.5A2.25 2.25 0 0114.25 20.25h-4.5A2.25 2.25 0 017.5 18.75V8.25m9 0h-9" />
+                      </svg>
+                      <span className="sr-only">Histórico de pedidos</span>
+                    </Link>
+                  )}
                 </div>
               </div>
             </div>
