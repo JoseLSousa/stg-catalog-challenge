@@ -6,7 +6,7 @@ import z from 'zod';
 
 
 export function RegisterForm() {
-    var isLoading: boolean = false;
+    let isLoading: boolean = false;
     const schema = z.object({
         email: z.email().nonempty({ message: "Email é obrigatório" }),
         password: z.string().min(8, { message: "Senha deve ter ao menos 8 caracteres" }),
@@ -49,12 +49,14 @@ export function RegisterForm() {
                 isLoading = false;
                 redirect('/auth/sign-up-success')
             }
-        } catch (err: any) {
+        } catch (err) {
             console.error('Erro ao registrar:', err);
             if (err instanceof z.ZodError) {
                 console.error('Erros de validação:', err);
-            } else {
+            } else if (err instanceof Error) {
                 console.error('Erro inesperado:', err.message || err);
+            } else {
+                console.error('Erro inesperado:', err);
             }
         }
 

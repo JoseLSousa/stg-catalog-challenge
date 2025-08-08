@@ -3,18 +3,9 @@ import Header from "@/components/Header"
 import Image from "next/image"
 import Link from "next/link"
 
-interface Product {
-    id: string;
-    name: string;
-    slug: string;
-    description: string;
-    price: number;
-    images: string[];
-    category_id: string;
-}
-
-export default async function CategoryPage({ params }: { params: { catalog: string } }) {
-    const categoryId = params.catalog;
+// Fix: Accept params as a Promise and await it
+export default async function CategoryPage({ params }: { params: Promise<{ catalog: string }> }) {
+    const { catalog: categoryId } = await params;
     const supabase = await createClient();
     
     // Fetch category details

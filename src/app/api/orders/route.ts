@@ -1,12 +1,23 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 
+interface OrderProduct {
+  id: string;
+  name: string;
+  price: number;
+  images: string[];
+}
+interface OrderItem {
+  product: OrderProduct;
+  quantity: number;
+}
+
 export async function POST(request: Request) {
   try {
     const body = await request.json()
     console.log('Request body:', body)
     
-    const { customer, items, payment } = body
+    const { customer, items } = body
     if (!customer || !items || !Array.isArray(items) || items.length === 0) {
       return NextResponse.json(
         { error: 'Invalid request data. Customer and items are required.' },
@@ -21,7 +32,7 @@ export async function POST(request: Request) {
     const userId = sessionData.session?.user.id || null
 
     // Calculate total
-    const total = items.reduce((sum: number, item: any) => sum + item.quantity * item.product.price, 0)
+    const total = items.reduce((sum: number, item: OrderItem) => sum + item.quantity * item.product.price, 0)
 
     // Insert order
     const orderData = {
@@ -48,7 +59,7 @@ export async function POST(request: Request) {
     }
 
     // Insert order items
-    const orderItems = items.map((item: any) => ({
+    const orderItems = items.map((item: OrderItem) => ({
       order_id: order.id,
       product_id: item.product.id,
       quantity: item.quantity,
@@ -64,11 +75,12 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json({ orderId: order.id })
-  } catch (err: any) {
-    console.error('Error creating order:', err)
+  } catch (err) {
+    const error = err as Error & { details?: string }
+    console.error('Error creating order:', error)
     return NextResponse.json({ 
-      error: err.message || 'An error occurred while processing your order',
-      details: err.details || err.toString() 
+      error: error.message || 'An error occurred while processing your order',
+      details: error.details || error.toString() 
     }, { status: 500 })
   }
 }
